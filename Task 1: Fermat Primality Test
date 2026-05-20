@@ -4,11 +4,17 @@ import time
 
 
 def fermat_test(n, k=10):
-    """Fermat primality test. Returns True if likely prime, False if composite."""
+    """
+    Fermat primality test.
+    Returns True if n is likely prime, False if n is composite.
+    """
+
     if n <= 1:
         return False
-    if n in (2, 3):
+
+    if n == 2 or n == 3:
         return True
+
     if n % 2 == 0:
         return False
 
@@ -24,11 +30,11 @@ def fermat_test(n, k=10):
     return True
 
 
-def run_fermat_tests():
+def main():
     test_numbers = [
         (561, "Carmichael number"),
         (104729, "known prime"),
-        (104723, "composite"),
+        (104723, "composite")
     ]
 
     k = 10
@@ -41,29 +47,16 @@ def run_fermat_tests():
         result = fermat_test(n, k)
         end = time.perf_counter()
 
-        status = "Likely prime" if result else "Composite"
+        if result:
+            status = "Likely prime"
+        else:
+            status = "Composite"
 
-        print(f"n = {n} ({description})")
-        print(f"Result: {status}")
-        print(f"Time: {end - start:.10f} seconds")
+        print("Number:", n)
+        print("Description:", description)
+        print("Result:", status)
+        print("Time:", format(end - start, ".10f"), "seconds")
         print()
 
-    print("""
-A Carmichael number is a composite integer N such that:
-    a^(N-1) ≡ 1 (mod N) for all integers a with gcd(a,N)=1.
 
-Example:
-    561 = 3 × 11 × 17
-
-Consequence:
-    The Fermat test may classify 561 as likely prime when the chosen
-    base is coprime to 561.
-
-Solution:
-    The Miller-Rabin test is stronger because it checks additional
-    conditions that help detect Carmichael numbers.
-""")
-
-
-if __name__ == "__main__":
-    run_fermat_tests()
+main()
