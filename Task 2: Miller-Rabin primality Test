@@ -1,0 +1,120 @@
+import random
+import math
+import time
+
+
+def fermat_test(n, k=10):
+    """
+    Fermat primality test.
+    Written again here so this file is not connected to fermat.py.
+    """
+
+    if n <= 1:
+        return False
+
+    if n == 2 or n == 3:
+        return True
+
+    if n % 2 == 0:
+        return False
+
+    for _ in range(k):
+        a = random.randint(2, n - 2)
+
+        if math.gcd(a, n) != 1:
+            return False
+
+        if pow(a, n - 1, n) != 1:
+            return False
+
+    return True
+
+
+def miller_rabin_test(n, k=10):
+    """
+    Miller-Rabin primality test.
+    Returns True if n is likely prime, False if n is composite.
+    """
+
+    if n <= 1:
+        return False
+
+    if n == 2 or n == 3:
+        return True
+
+    if n % 2 == 0:
+        return False
+
+    # Write n - 1 as 2^s * d, where d is odd
+    d = n - 1
+    s = 0
+
+    while d % 2 == 0:
+        d = d // 2
+        s = s + 1
+
+    for _ in range(k):
+        a = random.randint(2, n - 2)
+
+        x = pow(a, d, n)
+
+        if x == 1 or x == n - 1:
+            continue
+
+        passed = False
+
+        for _ in range(s - 1):
+            x = pow(x, 2, n)
+
+            if x == n - 1:
+                passed = True
+                break
+
+        if passed == False:
+            return False
+
+    return True
+
+
+def main():
+    test_numbers = [
+        (15485863, "large prime"),
+        (15485867, "composite")
+    ]
+
+    k = 10
+
+    print("Fermat vs Miller-Rabin Comparison")
+    print("-" * 50)
+
+    for n, description in test_numbers:
+        print("Number:", n)
+        print("Description:", description)
+
+        start = time.perf_counter()
+        fermat_result = fermat_test(n, k)
+        fermat_time = time.perf_counter() - start
+
+        start = time.perf_counter()
+        miller_result = miller_rabin_test(n, k)
+        miller_time = time.perf_counter() - start
+
+        if fermat_result:
+            fermat_status = "Likely prime"
+        else:
+            fermat_status = "Composite"
+
+        if miller_result:
+            miller_status = "Likely prime"
+        else:
+            miller_status = "Composite"
+
+        print("Fermat Result:", fermat_status)
+        print("Fermat Time:", format(fermat_time, ".10f"), "seconds")
+
+        print("Miller-Rabin Result:", miller_status)
+        print("Miller-Rabin Time:", format(miller_time, ".10f"), "seconds")
+        print()
+
+
+main()
