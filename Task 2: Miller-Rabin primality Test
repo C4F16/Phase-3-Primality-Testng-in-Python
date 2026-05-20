@@ -79,7 +79,8 @@ def miller_rabin_test(n, k=10):
 def main():
     test_numbers = [
         (15485863, "large prime"),
-        (15485867, "composite")
+        (15485867, "composite"),
+        (561, "Carmichael number")
     ]
 
     k = 10
